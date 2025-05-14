@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
     experimental: {
         serverMinification: true,
     },
+    logging: {
+        fetches: {
+            fullUrl: true,
+        },
+    },
     output: "standalone",
     eslint: {
         ignoreDuringBuilds: true,
