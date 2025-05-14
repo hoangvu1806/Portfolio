@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -37,6 +37,10 @@ export const metadata: Metadata = {
         title: "VU HOANG",
         statusBarStyle: "black-translucent",
     },
+};
+
+export const viewport: Viewport = {
+    themeColor: "#030712",
 };
 
 export default function RootLayout({

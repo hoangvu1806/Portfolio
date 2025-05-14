@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { profile } from "@/data/profile";
 
 interface ProjectData {
@@ -36,7 +36,8 @@ interface ProjectData {
     [key: string]: any;
 }
 
-export default function ProjectDetailPage() {
+// Component that uses useSearchParams
+function ProjectDetailContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [project, setProject] = useState<ProjectData | null>(null);
@@ -133,40 +134,36 @@ export default function ProjectDetailPage() {
 
     if (loading) {
         return (
-            <MainLayout>
-                <div className="container mx-auto px-4 md:px-6 py-20 text-center">
-                    <div className="flex justify-center items-center min-h-[50vh]">
-                        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
-                    </div>
+            <div className="container mx-auto px-4 md:px-6 py-20 text-center">
+                <div className="flex justify-center items-center min-h-[50vh]">
+                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
                 </div>
-            </MainLayout>
+            </div>
         );
     }
 
     if (!project) {
         return (
-            <MainLayout>
-                <div className="container mx-auto px-4 md:px-6 py-20 text-center">
-                    <h1 className="text-4xl font-bold text-white mb-6">
-                        Project Not Found
-                    </h1>
-                    <p className="text-xl text-gray-300 mb-8">
-                        The project you're looking for doesn't exist or has been
-                        moved.
-                    </p>
-                    <Link
-                        href="/projects"
-                        className="inline-flex items-center px-6 py-3 font-medium bg-primary text-white rounded-lg"
-                    >
-                        <FiArrowLeft className="mr-2" /> Back to Projects
-                    </Link>
-                </div>
-            </MainLayout>
+            <div className="container mx-auto px-4 md:px-6 py-20 text-center">
+                <h1 className="text-4xl font-bold text-white mb-6">
+                    Project Not Found
+                </h1>
+                <p className="text-xl text-gray-300 mb-8">
+                    The project you're looking for doesn't exist or has been
+                    moved.
+                </p>
+                <Link
+                    href="/projects"
+                    className="inline-flex items-center px-6 py-3 font-medium bg-primary text-white rounded-lg"
+                >
+                    <FiArrowLeft className="mr-2" /> Back to Projects
+                </Link>
+            </div>
         );
     }
 
     return (
-        <MainLayout>
+        <>
             {/* Hero Section */}
             <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
                 <div className="absolute inset-0 bg-gray-900/70">
@@ -440,6 +437,25 @@ export default function ProjectDetailPage() {
                     </div>
                 </div>
             </div>
+        </>
+    );
+}
+
+// The main page component wrapped with Suspense
+export default function ProjectDetailPage() {
+    return (
+        <MainLayout>
+            <Suspense
+                fallback={
+                    <div className="container mx-auto px-4 md:px-6 py-20 text-center">
+                        <div className="flex justify-center items-center min-h-[50vh]">
+                            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
+                        </div>
+                    </div>
+                }
+            >
+                <ProjectDetailContent />
+            </Suspense>
         </MainLayout>
     );
 }
