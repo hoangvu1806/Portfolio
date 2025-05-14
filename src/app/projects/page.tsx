@@ -296,7 +296,9 @@ export default function ProjectsPage() {
                                                             <Link
                                                                 href={
                                                                     project.demoUrl ||
-                                                                    "/projects/detail"
+                                                                    `/projects/detail?project=${encodeURIComponent(
+                                                                        project.title
+                                                                    )}`
                                                                 }
                                                                 className="inline-flex items-center px-5 py-2.5 font-medium bg-gradient-to-r from-primary to-secondary text-white rounded-lg shadow-lg hover:shadow-primary-glow transition-all"
                                                             >
@@ -378,7 +380,9 @@ export default function ProjectsPage() {
                                                             <Link
                                                                 href={
                                                                     project.demoUrl ||
-                                                                    "/projects/detail"
+                                                                    `/projects/detail?project=${encodeURIComponent(
+                                                                        project.title
+                                                                    )}`
                                                                 }
                                                                 className="inline-flex items-center text-sm px-3 py-1.5 font-medium bg-primary-900/30 text-primary-300 rounded-md hover:bg-primary-900/50 transition-colors"
                                                             >

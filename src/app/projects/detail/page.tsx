@@ -15,55 +15,155 @@ import {
 } from "react-icons/fi";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { profile } from "@/data/profile";
+
+interface ProjectData {
+    title: string;
+    description: string;
+    longDescription: string;
+    coverImage?: string;
+    images?: string[];
+    type?: string;
+    details?: string[];
+    features: string[];
+    challenges: string[];
+    results: string[];
+    technologies: string[];
+    githubUrl?: string;
+    demoUrl?: string;
+    [key: string]: any;
+}
 
 export default function ProjectDetailPage() {
-    // Sample data for a detailed project
-    const project = {
-        title: "AI Vision - Intelligent Image Recognition System",
-        description:
-            "A modern computer vision system combining traditional image processing techniques with advanced deep learning models to create an accurate and efficient image recognition solution.",
-        longDescription:
-            "AI Vision is a 6-month research and development project focused on building a comprehensive computer vision system capable of analyzing and understanding image content at a high level. The project combines traditional image processing techniques (such as noise filtering, segmentation, and feature extraction) with advanced deep learning models (such as CNN, YOLO, and Transformer) to create an accurate and efficient image recognition solution.\n\nThe system is designed with a flexible microservice architecture, allowing easy integration into various applications and extension of new functionalities. It also includes a comprehensive RESTful API and a user-friendly interface for visualizing and interacting with image analysis results.",
-        coverImage: "/project-cover.jpg",
-        images: ["/project-1.jpg", "/project-2.jpg", "/project-3.jpg"],
-        date: "June, 2023",
-        client: "Internal Research",
-        role: "Lead AI Engineer",
-        category: "Computer Vision",
-        technologies: [
-            "Python",
-            "TensorFlow",
-            "PyTorch",
-            "OpenCV",
-            "Docker",
-            "FastAPI",
-            "React",
-        ],
-        features: [
-            "High-accuracy object detection and classification in images",
-            "Semantic segmentation for detailed pixel-level analysis",
-            "Real-time object tracking in videos",
-            "Text information extraction from images (OCR)",
-            "Anomaly and deformation detection in medical images",
-            "Comprehensive RESTful API for easy integration",
-            "Visual interface for monitoring and analyzing results",
-            "Scalability to handle large data volumes",
-        ],
-        challenges: [
-            "Optimizing model performance for real-time analysis",
-            "Balancing accuracy and computational resource requirements",
-            "Handling difficult viewpoints and poor lighting conditions",
-            "Designing an extensible architecture to handle concurrent requests",
-        ],
-        results: [
-            "95% detection accuracy on the test dataset",
-            "40% reduction in processing time compared to traditional methods",
-            "Horizontal scalability to handle up to 1000 requests/minute",
-            "Intuitive user interface reducing analysis time by 60%",
-        ],
-        demoUrl: "https://ai-vision-demo.com",
-        githubUrl: "https://github.com/username/ai-vision",
-    };
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [project, setProject] = useState<ProjectData | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Get project title from URL query parameter
+        const projectTitle = searchParams.get("project");
+
+        if (!projectTitle) {
+            router.push("/projects");
+            return;
+        }
+
+        // Find the project in personalProjects array
+        const allProjects = [...profile.personalProjects];
+        const foundProject = allProjects.find(
+            (p) => p.title.toLowerCase() === projectTitle.toLowerCase()
+        );
+
+        // Only allow EzClip and Decision Tree Visualization projects
+        if (
+            !foundProject ||
+            (foundProject.title !== "EzClip" &&
+                foundProject.title !== "Decision Tree Visualization" &&
+                foundProject.title !== "Deeplearning-Practice")
+        ) {
+            router.push("/projects");
+            return;
+        }
+
+        // Prepare project data for display
+        const projectData: ProjectData = {
+            ...foundProject,
+            longDescription: foundProject.description,
+            coverImage: foundProject.image,
+            images: foundProject.image ? [foundProject.image] : [],
+            features: foundProject.details || [],
+            challenges:
+                foundProject.title === "Deeplearning-Practice"
+                    ? [
+                          "Implementing complex neural network architectures from scratch",
+                          "Optimizing model performance for various tasks",
+                          "Ensuring proper data preprocessing for different domains",
+                          "Balancing model complexity with training efficiency",
+                          "Documenting implementations with clear explanations",
+                      ]
+                    : [
+                          "Building an intuitive user interface",
+                          "Ensuring cross-platform compatibility",
+                          "Optimizing performance for all users",
+                      ],
+            results:
+                foundProject.title === "Deeplearning-Practice"
+                    ? [
+                          "Comprehensive library of deep learning implementations",
+                          "Successfully applied models to real-world datasets",
+                          "Well-documented code showcasing best practices",
+                          "Educational resource for understanding deep learning concepts",
+                          "Organized structure by application domains",
+                      ]
+                    : [
+                          "Successfully deployed and available for public use",
+                          "Positive user feedback on functionality and design",
+                          "Continuous improvement based on community input",
+                      ],
+            technologies:
+                foundProject.title === "EzClip"
+                    ? ["JavaScript", "Electron.js", "HTML", "CSS", "Node.js"]
+                    : foundProject.title === "Deeplearning-Practice"
+                    ? [
+                          "Python",
+                          "PyTorch",
+                          "Numpy",
+                          "Pandas",
+                          "Matplotlib",
+                          "Scikit-learn",
+                          "TensorFlow",
+                      ]
+                    : [
+                          "Python",
+                          "FastAPI",
+                          "scikit-learn",
+                          "HTML",
+                          "CSS",
+                          "JavaScript",
+                          "TailwindCSS",
+                      ],
+        };
+
+        setProject(projectData);
+        setLoading(false);
+    }, [searchParams, router]);
+
+    if (loading) {
+        return (
+            <MainLayout>
+                <div className="container mx-auto px-4 md:px-6 py-20 text-center">
+                    <div className="flex justify-center items-center min-h-[50vh]">
+                        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary"></div>
+                    </div>
+                </div>
+            </MainLayout>
+        );
+    }
+
+    if (!project) {
+        return (
+            <MainLayout>
+                <div className="container mx-auto px-4 md:px-6 py-20 text-center">
+                    <h1 className="text-4xl font-bold text-white mb-6">
+                        Project Not Found
+                    </h1>
+                    <p className="text-xl text-gray-300 mb-8">
+                        The project you're looking for doesn't exist or has been
+                        moved.
+                    </p>
+                    <Link
+                        href="/projects"
+                        className="inline-flex items-center px-6 py-3 font-medium bg-primary text-white rounded-lg"
+                    >
+                        <FiArrowLeft className="mr-2" /> Back to Projects
+                    </Link>
+                </div>
+            </MainLayout>
+        );
+    }
 
     return (
         <MainLayout>
@@ -118,13 +218,13 @@ export default function ProjectDetailPage() {
                             transition={{ duration: 0.6 }}
                             className="mb-12"
                         >
-                            <h2 className="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary inline-block">
+                            <h3 className="text-2xl font-bold mb-6 bg-clip-text text-gradient-to-r bg-gradient-to-r from-primary to-secondary inline-block">
                                 Project Overview
-                            </h2>
+                            </h3>
                             <div className="prose prose-lg prose-invert max-w-none">
                                 {project.longDescription
                                     .split("\n\n")
-                                    .map((paragraph, idx) => (
+                                    .map((paragraph: string, idx: number) => (
                                         <p
                                             key={idx}
                                             className="text-gray-300 mb-4"
@@ -135,37 +235,39 @@ export default function ProjectDetailPage() {
                             </div>
                         </motion.section>
 
-                        <motion.section
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.1 }}
-                            className="mb-12"
-                        >
-                            <h2 className="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary inline-block">
-                                Key Features
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {project.features.map((feature, index) => (
-                                    <motion.div
-                                        key={index}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{
-                                            duration: 0.4,
-                                            delay: 0.2 + index * 0.05,
-                                        }}
-                                        className="flex items-start"
-                                    >
-                                        <span className="text-primary text-lg mr-2">
-                                            •
-                                        </span>
-                                        <p className="text-gray-300">
-                                            {feature}
-                                        </p>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </motion.section>
+                        {project.features && project.features.length > 0 && (
+                            <motion.section
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: 0.1 }}
+                                className="mb-12"
+                            >
+                                <h3 className="text-2xl font-bold mb-6 bg-clip-text bg-gradient-to-r from-primary to-secondary inline-block">
+                                    Key Features
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {project.features.map((feature, index) => (
+                                        <motion.div
+                                            key={index}
+                                            initial={{ opacity: 0, x: -20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{
+                                                duration: 0.4,
+                                                delay: 0.2 + index * 0.05,
+                                            }}
+                                            className="flex items-start"
+                                        >
+                                            <span className="text-primary text-lg mr-2">
+                                                •
+                                            </span>
+                                            <p className="text-gray-300">
+                                                {feature}
+                                            </p>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </motion.section>
+                        )}
 
                         <motion.section
                             initial={{ opacity: 0, y: 20 }}
@@ -173,199 +275,167 @@ export default function ProjectDetailPage() {
                             transition={{ duration: 0.6, delay: 0.2 }}
                             className="mb-12 grid gap-8"
                         >
-                            <div>
-                                <h2 className="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary inline-block">
-                                    Challenges
-                                </h2>
-                                <ul className="space-y-3">
-                                    {project.challenges.map(
-                                        (challenge, index) => (
-                                            <li
-                                                key={index}
-                                                className="flex items-start text-gray-300"
-                                            >
-                                                <span className="text-secondary text-lg mr-2">
-                                                    •
-                                                </span>
-                                                <span>{challenge}</span>
-                                            </li>
-                                        )
-                                    )}
-                                </ul>
-                            </div>
-
-                            <div>
-                                <h2 className="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary inline-block">
-                                    Results
-                                </h2>
-                                <ul className="space-y-3">
-                                    {project.results.map((result, index) => (
-                                        <li
-                                            key={index}
-                                            className="flex items-start text-gray-300"
-                                        >
-                                            <span className="text-accent text-lg mr-2">
-                                                •
-                                            </span>
-                                            <span>{result}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </motion.section>
-
-                        <motion.section
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
-                            className="mb-12"
-                        >
-                            <h2 className="text-2xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary inline-block">
-                                Project Images
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {project.images.map((image, index) => (
-                                    <motion.div
-                                        key={index}
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{
-                                            duration: 0.5,
-                                            delay: 0.3 + index * 0.1,
-                                        }}
-                                        whileHover={{ scale: 1.03 }}
-                                        className="relative aspect-video rounded-xl overflow-hidden shadow-lg"
-                                    >
-                                        <Image
-                                            src={image}
-                                            alt={`${project.title} - Image ${
-                                                index + 1
-                                            }`}
-                                            fill
-                                            className="object-cover"
-                                        />
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </motion.section>
-                    </div>
-
-                    {/* Sidebar */}
-                    <div className="lg:col-span-1">
-                        <div className="sticky top-24">
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: 0.2 }}
-                                className="relative backdrop-blur-sm bg-gray-900/30 rounded-xl overflow-hidden shadow-lg border border-gray-700/50 p-6 mb-8"
-                            >
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-accent"></div>
-                                <h3 className="text-xl font-bold mb-6 text-gray-100">
-                                    Project Information
-                                </h3>
-
-                                <div className="space-y-4">
-                                    <div className="flex items-start gap-3">
-                                        <FiCalendar className="text-primary mt-1" />
-                                        <div>
-                                            <h4 className="text-sm font-medium text-gray-400">
-                                                Date
-                                            </h4>
-                                            <p className="text-gray-300">
-                                                {project.date}
-                                            </p>
-                                        </div>
+                            {project.challenges &&
+                                project.challenges.length > 0 && (
+                                    <div>
+                                        <h3 className="text-2xl font-bold mb-6 bg-clip-text bg-gradient-to-r from-primary to-secondary inline-block">
+                                            Challenges
+                                        </h3>
+                                        <ul className="space-y-3">
+                                            {project.challenges.map(
+                                                (challenge, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className="flex items-start text-gray-300"
+                                                    >
+                                                        <span className="text-secondary text-lg mr-2">
+                                                            •
+                                                        </span>
+                                                        <span>{challenge}</span>
+                                                    </li>
+                                                )
+                                            )}
+                                        </ul>
                                     </div>
+                                )}
 
-                                    <div className="flex items-start gap-3">
-                                        <FiUsers className="text-primary mt-1" />
-                                        <div>
-                                            <h4 className="text-sm font-medium text-gray-400">
-                                                Client
-                                            </h4>
-                                            <p className="text-gray-300">
-                                                {project.client}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start gap-3">
-                                        <FiUser className="text-primary mt-1" />
-                                        <div>
-                                            <h4 className="text-sm font-medium text-gray-400">
-                                                Role
-                                            </h4>
-                                            <p className="text-gray-300">
-                                                {project.role}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start gap-3">
-                                        <FiTag className="text-primary mt-1" />
-                                        <div>
-                                            <h4 className="text-sm font-medium text-gray-400">
-                                                Category
-                                            </h4>
-                                            <p className="text-gray-300">
-                                                {project.category}
-                                            </p>
-                                        </div>
-                                    </div>
+                            {project.results && project.results.length > 0 && (
+                                <div>
+                                    <h3 className="text-2xl font-bold mb-6 bg-clip-text bg-gradient-to-r from-primary to-secondary inline-block">
+                                        Results
+                                    </h3>
+                                    <ul className="space-y-3">
+                                        {project.results.map(
+                                            (result, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="flex items-start text-gray-300"
+                                                >
+                                                    <span className="text-accent text-lg mr-2">
+                                                        •
+                                                    </span>
+                                                    <span>{result}</span>
+                                                </li>
+                                            )
+                                        )}
+                                    </ul>
                                 </div>
-                            </motion.div>
+                            )}
+                        </motion.section>
 
-                            <motion.div
+                        {project.images && project.images.length > 0 && (
+                            <motion.section
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.6, delay: 0.3 }}
-                                className="relative backdrop-blur-sm bg-gray-900/30 rounded-xl overflow-hidden shadow-lg border border-gray-700/50 p-6 mb-8"
+                                className="mb-12"
                             >
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-accent"></div>
-                                <h3 className="text-xl font-bold mb-4 text-gray-100">
-                                    Technologies
+                                <h3 className="text-2xl font-bold mb-6 bg-clip-text bg-gradient-to-r from-primary to-secondary inline-block">
+                                    Project Images
                                 </h3>
-
-                                <div className="flex flex-wrap gap-2">
-                                    {project.technologies.map((tech, index) => (
-                                        <span
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {project.images.map((image, index) => (
+                                        <motion.div
                                             key={index}
-                                            className="px-3 py-1 bg-gray-800 text-gray-300 rounded-full text-sm"
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{
+                                                duration: 0.5,
+                                                delay: 0.3 + index * 0.1,
+                                            }}
+                                            whileHover={{ scale: 1.03 }}
+                                            className="relative aspect-video rounded-xl overflow-hidden shadow-lg"
                                         >
-                                            {tech}
-                                        </span>
+                                            <Image
+                                                src={image}
+                                                alt={`${
+                                                    project.title
+                                                } - Image ${index + 1}`}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                        </motion.div>
                                     ))}
                                 </div>
-                            </motion.div>
+                            </motion.section>
+                        )}
+                    </div>
 
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: 0.4 }}
-                                className="flex flex-col gap-4"
-                            >
-                                {project.demoUrl && (
-                                    <Link
-                                        href={project.demoUrl}
-                                        target="_blank"
-                                        className="inline-flex items-center justify-center w-full px-6 py-3 font-medium bg-gradient-to-r from-primary to-secondary text-white rounded-lg shadow-lg hover:shadow-primary-glow transition-all"
-                                    >
-                                        View Demo{" "}
-                                        <FiExternalLink className="ml-2" />
-                                    </Link>
+                    {/* Sidebar */}
+                    <div>
+                        <div className="backdrop-blur-sm bg-gray-900/30 rounded-xl p-6 border border-gray-700/50 sticky top-24">
+                            <h3 className="text-xl font-bold text-white mb-6">
+                                Project Details
+                            </h3>
+
+                            <div className="space-y-4">
+                                {project.type && (
+                                    <div className="flex items-start">
+                                        <div className="text-primary mr-3 mt-1">
+                                            <FiTag />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm text-gray-400 mb-1">
+                                                Category
+                                            </h4>
+                                            <p className="text-gray-200">
+                                                {project.type}
+                                            </p>
+                                        </div>
+                                    </div>
                                 )}
 
-                                {project.githubUrl && (
-                                    <Link
-                                        href={project.githubUrl}
-                                        target="_blank"
-                                        className="inline-flex items-center justify-center w-full px-6 py-3 font-medium bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
-                                    >
-                                        Source Code{" "}
-                                        <FiGithub className="ml-2" />
-                                    </Link>
+                                {project.technologies && (
+                                    <div className="flex items-start">
+                                        <div className="text-primary mr-3 mt-1">
+                                            <FiLayers />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm text-gray-400 mb-1">
+                                                Technologies
+                                            </h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {project.technologies.map(
+                                                    (tech, index) => (
+                                                        <span
+                                                            key={index}
+                                                            className="inline-block bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded"
+                                                        >
+                                                            {tech}
+                                                        </span>
+                                                    )
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
                                 )}
-                            </motion.div>
+
+                                <div className="flex flex-col gap-4 mt-8">
+                                    {project.githubUrl && (
+                                        <a
+                                            href={project.githubUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center justify-center w-full px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                                        >
+                                            <FiGithub className="mr-2" />
+                                            View on GitHub
+                                        </a>
+                                    )}
+
+                                    {project.demoUrl && (
+                                        <a
+                                            href={project.demoUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center justify-center w-full px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg shadow-lg hover:shadow-primary-glow transition-all"
+                                        >
+                                            <FiExternalLink className="mr-2" />
+                                            Live Demo
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
