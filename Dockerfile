@@ -22,8 +22,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Set environment variables for build
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
 
 # Build the application
 RUN npm run build
@@ -33,9 +33,9 @@ FROM base AS runner
 WORKDIR /app
 
 # Set environment variables for runtime
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV PORT 8000
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=8000
 
 # Create a non-root user for security
 RUN addgroup --system --gid 1001 nodejs
