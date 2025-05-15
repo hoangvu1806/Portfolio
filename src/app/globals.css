@@ -103,7 +103,7 @@
     --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: light) {
     :root {
         --foreground: #0f172a;
         --background: #f8fafc;
@@ -116,7 +116,7 @@
         --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
             0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 5px rgba(79, 70, 229, 0.2);
     }
-}
+} */
 
 /* Text shadow effects */
 .text-shadow-primary {
