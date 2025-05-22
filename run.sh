@@ -2,6 +2,8 @@
 
 # Exit on error
 set -e
+echo "Pulling latest changes from GitHub..."
+git pull origin main
 
 echo "🚀 Building and running Do Hoang Vu's Portfolio in Docker"
 
