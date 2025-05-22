@@ -13,13 +13,31 @@ import {
     FiAward,
     FiBriefcase,
 } from "react-icons/fi";
+import Image from "next/image";
 import { profile } from "@/data/profile";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { DynamicBackground } from "@/components/ui/dynamic-background";
 import { TypingAnimation } from "@/components/ui/typing-animation";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+    const [glowIntensity, setGlowIntensity] = useState(0.5);
+    const [isAvatarHovered, setIsAvatarHovered] = useState(false);
+    
+    // Subtle breathing animation for the avatar glow
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setGlowIntensity(prev => {
+                // Oscillate between 0.4 and 0.6 for subtle effect
+                const newValue = prev + 0.005 * (Math.random() > 0.5 ? 1 : -1);
+                return Math.max(0.4, Math.min(0.6, newValue));
+            });
+        }, 100);
+        
+        return () => clearInterval(interval);
+    }, []);
+    
     const introTexts = [
         "AI Engineer specializing in generative AI programming, advanced large language models, and multimodal visual processing.",
         "Extensive experience developing enterprise-grade chatbot systems and voice interaction pipelines optimized for high-concurrency environments.",
@@ -120,9 +138,53 @@ export default function Home() {
                             }}
                             className="md:col-span-5 relative flex justify-center"
                         >
-                            <div className="relative z-10 w-64 h-64 md:w-80 md:h-80 bg-gradient-primary rounded-full flex items-center justify-center overflow-hidden shadow-primary-glow">
-                                <FiUser className="text-white text-8xl" />
-                            </div>
+                            <motion.div 
+                                className="relative z-10 w-64 h-64 md:w-80 md:h-80 bg-gradient-primary rounded-full flex items-center justify-center overflow-hidden shadow-primary-glow cursor-pointer"
+                                onHoverStart={() => setIsAvatarHovered(true)}
+                                onHoverEnd={() => setIsAvatarHovered(false)}
+                                whileHover={{ 
+                                    scale: 1.02,
+                                    transition: { duration: 0.3 } 
+                                }}
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                {/* Inner glow effect with dynamic intensity */}
+                                <motion.div 
+                                    className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/40 to-secondary/40 z-10"
+                                    animate={{ 
+                                        opacity: isAvatarHovered ? 0.7 : glowIntensity 
+                                    }}
+                                    transition={{ duration: 0.5 }}
+                                ></motion.div>
+                                
+                                {/* Avatar container with focus effect */}
+                                <div className="relative w-[94%] h-[94%] rounded-full overflow-hidden z-20">
+                                    {/* Vignette overlay for edge blur effect */}
+                                    <div className="absolute inset-0 rounded-full shadow-[inset_0_0_20px_10px_rgba(0,0,0,0.3)] z-30"></div>
+                                    
+                                    <Image 
+                                        src="/avatar.jpg" 
+                                        alt={`${profile.name}'s avatar`}
+                                        width={320} 
+                                        height={320} 
+                                        className="object-cover w-full h-full scale-110 rounded-full filter saturate-[1.1] contrast-[1.05]"
+                                        style={{
+                                            objectPosition: "center 40%", // Adjust to focus more on the face
+                                        }}
+                                        priority
+                                    />
+                                </div>
+                                
+                                {/* Outer glow ring with dynamic intensity */}
+                                <motion.div 
+                                    className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/30 blur-sm -z-10"
+                                    animate={{ 
+                                        opacity: isAvatarHovered ? 0.85 : glowIntensity + 0.2,
+                                        scale: isAvatarHovered ? 1.03 : 1 + (glowIntensity - 0.5) * 0.02
+                                    }}
+                                    transition={{ duration: 0.5 }}
+                                ></motion.div>
+                            </motion.div>
 
                             {/* Floating elements */}
                             <div className="absolute top-10 -left-4 z-20 backdrop-blur-sm bg-gray-900/30 rounded-lg border border-gray-700/50 p-2 ml-4">

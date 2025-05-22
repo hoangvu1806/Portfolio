@@ -1,8 +1,8 @@
 export const profile = {
     name: "Do Hoang Vu",
     title: "AI Engineer",
-    email: "dohoangvu.forwork@gmail.com",
-    phone: "+84 35901375",
+    email: "dohoangvu.nt2005@gmail.com",
+    phone: "+84 835901375",
     location: {
         address: "Hoang Van Thu Street",
         city: "Ho Chi Minh City",
@@ -20,7 +20,7 @@ export const profile = {
         graduation: "2027",
         gpa: "3.62/4.00",
     },
-    tech_stack: ["Python", "PyTorch", "LangChain", "FastAPI"],
+    tech_stack: ["PyTorch", "LangChain", "FastAPI"],
     certifications: [
         {
             title: "Machine Learning - Deep Learning Foundation",
@@ -201,7 +201,7 @@ export const profile = {
         technical: [
             {
                 category: "Programming",
-                items: ["Python", "JavaScript", "C/C++", "SQL", "Bash"],
+                items: ["Python", "JavaScript", "SQL", "C/C++", "Bash"],
             },
             {
                 category: "Libraries/Frameworks",
