@@ -1224,3 +1224,353 @@ p {
     border-radius: 1px;
     box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
 }
+/* Project Image Fixes */
+.project-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+
+.project-image-container img {
+    transition: transform 0.3s ease;
+}
+
+.project-image-container:hover img {
+    transform: scale(1.05);
+}
+
+/* Fix for project cards on desktop/landscape */
+@media (min-width: 1024px) {
+    .project-card-featured {
+        min-height: 320px;
+    }
+
+    .project-card-featured .project-image-container {
+        height: 100%;
+        min-height: 280px;
+    }
+
+    .project-card-featured img {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .project-card-featured .project-image-container {
+        height: 240px;
+    }
+}
+
+@media (max-width: 767px) {
+    .project-card-featured .project-image-container {
+        height: 200px;
+    }
+}
+/* Additional responsive image fixes */
+@media (min-width: 1280px) {
+    .project-card-featured .project-image-container {
+        min-height: 300px;
+    }
+}
+
+@media (min-width: 1536px) {
+    .project-card-featured .project-image-container {
+        min-height: 320px;
+    }
+}
+
+/* Ensure proper aspect ratio for project images */
+.project-image-aspect {
+    aspect-ratio: 16/9;
+}
+
+@media (max-width: 1023px) {
+    .project-image-aspect {
+        aspect-ratio: 16/10;
+    }
+}
+
+/* Fix for hero section images */
+.hero-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-image-container img {
+    object-fit: cover;
+    object-position: center center;
+}
+
+/* Smooth transitions for all images */
+img {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+/* Blog Content Styles */
+.blog-content {
+    line-height: 1.8;
+    color: #d1d5db;
+}
+
+.blog-content h1,
+.blog-content h2,
+.blog-content h3,
+.blog-content h4,
+.blog-content h5,
+.blog-content h6 {
+    color: #ffffff;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.blog-content h1 {
+    font-size: 2.5rem;
+    border-bottom: 2px solid #6366f1;
+    padding-bottom: 0.5rem;
+}
+
+.blog-content h2 {
+    font-size: 2rem;
+    color: #6366f1;
+}
+
+.blog-content h3 {
+    font-size: 1.5rem;
+    color: #00ffff;
+}
+
+.blog-content h4 {
+    font-size: 1.25rem;
+    color: #ff00e4;
+}
+
+.blog-content p {
+    margin-bottom: 1.5rem;
+    color: #d1d5db;
+}
+
+.blog-content a {
+    color: #6366f1;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.blog-content a:hover {
+    color: #818cf8;
+}
+
+.blog-content ul,
+.blog-content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.blog-content li {
+    margin-bottom: 0.5rem;
+    color: #d1d5db;
+}
+
+.blog-content blockquote {
+    border-left: 4px solid #6366f1;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #9ca3af;
+    background: rgba(99, 102, 241, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.blog-content code {
+    background: #1f2937;
+    color: #10b981;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-family: "Fira Code", "Monaco", "Consolas", monospace;
+}
+
+.blog-content pre {
+    background: #111827;
+    color: #d1d5db;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border: 1px solid #374151;
+}
+
+.blog-content pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+.blog-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: rgba(31, 41, 55, 0.5);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.blog-content th,
+.blog-content td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #374151;
+}
+
+.blog-content th {
+    background: rgba(99, 102, 241, 0.2);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.blog-content td {
+    color: #d1d5db;
+}
+
+.blog-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.blog-content hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #6366f1, transparent);
+    margin: 2rem 0;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Blog specific animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.blog-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.blog-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.blog-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.blog-card:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+/* Reading progress bar */
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #00ffff, #ff00e4);
+    transform-origin: left;
+    z-index: 1000;
+}
+
+/* Responsive blog content */
+@media (max-width: 768px) {
+    .blog-content h1 {
+        font-size: 2rem;
+    }
+
+    .blog-content h2 {
+        font-size: 1.75rem;
+    }
+
+    .blog-content h3 {
+        font-size: 1.5rem;
+    }
+
+    .blog-content pre {
+        padding: 1rem;
+        font-size: 0.875rem;
+    }
+
+    .blog-content table {
+        font-size: 0.875rem;
+    }
+
+    .blog-content th,
+    .blog-content td {
+        padding: 0.5rem;
+    }
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99, 102, 241, 0.5) rgba(30, 41, 59, 0.3);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.3);
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.6),
+        rgba(168, 85, 247, 0.6)
+    );
+    border-radius: 3px;
+    transition: background 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.8),
+        rgba(168, 85, 247, 0.8)
+    );
+}

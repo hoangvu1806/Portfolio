@@ -13,9 +13,12 @@ import {
     FiUser,
     FiMessageSquare,
     FiEdit,
+    FiAlertCircle,
 } from "react-icons/fi";
 import Link from "next/link";
 import { useState } from "react";
+import { sendContactEmail, validateContactForm, type ContactFormData } from "@/utils/email";
+import { Toast } from "@/components/ui/toast";
 
 export default function ContactPage() {
     const [formState, setFormState] = useState({
@@ -27,6 +30,10 @@ export default function ContactPage() {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
+    const [submitError, setSubmitError] = useState<string | null>(null);
+    const [validationErrors, setValidationErrors] = useState<string[]>([]);
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
+    const [showErrorToast, setShowErrorToast] = useState(false);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -35,25 +42,43 @@ export default function ContactPage() {
         setFormState((prev) => ({ ...prev, [id]: value }));
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setSubmitError(null);
+        setValidationErrors([]);
 
-        // Simulate email sending
-        setTimeout(() => {
+        // Prepare form data
+        const formData: ContactFormData = {
+            from_name: formState.name,
+            from_email: formState.email,
+            subject: formState.subject,
+            message: formState.message,
+        };
+
+        // Validate form
+        const errors = validateContactForm(formData);
+        if (errors.length > 0) {
+            setValidationErrors(errors);
             setIsSubmitting(false);
-            setSubmitSuccess(true);
-            // Reset form after 3 seconds
-            setTimeout(() => {
-                setSubmitSuccess(false);
-                setFormState({
-                    name: "",
-                    email: "",
-                    subject: "",
-                    message: "",
-                });
-            }, 3000);
-        }, 1500);
+            return;
+        }
+
+        try {
+            await sendContactEmail(formData);
+            setShowSuccessToast(true);
+            setFormState({
+                name: "",
+                email: "",
+                subject: "",
+                message: "",
+            });
+        } catch (error) {
+            setSubmitError(error instanceof Error ? error.message : 'An unexpected error occurred');
+            setShowErrorToast(true);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const contactItems = [
@@ -62,7 +87,7 @@ export default function ContactPage() {
             title: "Email",
             value: profile.email,
             link: `mailto:${profile.email}`,
-            bgColor: "bg-primary-900/30",
+            bgColor: "bg-primary/20 shadow-primary-glow",
             delay: 0.2,
         },
         {
@@ -70,14 +95,14 @@ export default function ContactPage() {
             title: "Phone",
             value: profile.phone,
             link: `tel:${profile.phone}`,
-            bgColor: "bg-secondary-900/30",
+            bgColor: "bg-secondary/20 shadow-secondary-glow",
             delay: 0.3,
         },
         {
             icon: <FiMapPin className="w-6 h-6 text-accent" />,
             title: "Address",
             value: `${profile.location.address}, ${profile.location.district}, ${profile.location.city}, ${profile.location.country}`,
-            bgColor: "bg-accent-900/30",
+            bgColor: "bg-accent/20 shadow-accent-glow",
             delay: 0.4,
         },
     ];
@@ -174,11 +199,11 @@ export default function ContactPage() {
                                             <h3 className="font-medium text-lg text-gray-100 mb-5">
                                                 Connect with me
                                             </h3>
-                                            <div className="flex space-x-4">
+                                            <div className="flex space-x-6">
                                                 <motion.div
                                                     whileHover={{
-                                                        scale: 1.1,
-                                                        y: -5,
+                                                        scale: 1.2,
+                                                        y: -3,
                                                     }}
                                                     transition={{
                                                         type: "spring",
@@ -193,16 +218,16 @@ export default function ContactPage() {
                                                         }
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="bg-gray-800 hover:bg-primary-900/50 text-gray-300 hover:text-primary p-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-primary-glow"
+                                                        className="text-gray-400 hover:text-primary transition-colors duration-300"
                                                         aria-label="GitHub"
                                                     >
-                                                        <FiGithub className="w-6 h-6" />
+                                                        <FiGithub className="w-8 h-8" />
                                                     </Link>
                                                 </motion.div>
                                                 <motion.div
                                                     whileHover={{
-                                                        scale: 1.1,
-                                                        y: -5,
+                                                        scale: 1.2,
+                                                        y: -3,
                                                     }}
                                                     transition={{
                                                         type: "spring",
@@ -217,10 +242,10 @@ export default function ContactPage() {
                                                         }
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="bg-gray-800 hover:bg-secondary-900/50 text-gray-300 hover:text-secondary p-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-secondary-glow"
+                                                        className="text-gray-400 hover:text-secondary transition-colors duration-300"
                                                         aria-label="LinkedIn"
                                                     >
-                                                        <FiLinkedin className="w-6 h-6" />
+                                                        <FiLinkedin className="w-8 h-8" />
                                                     </Link>
                                                 </motion.div>
                                             </div>
@@ -244,189 +269,167 @@ export default function ContactPage() {
                                             Send a Message
                                         </h2>
 
-                                        {submitSuccess ? (
+                                        {/* Validation Errors */}
+                                        {validationErrors.length > 0 && (
                                             <motion.div
-                                                initial={{
-                                                    opacity: 0,
-                                                    scale: 0.8,
-                                                }}
-                                                animate={{
-                                                    opacity: 1,
-                                                    scale: 1,
-                                                }}
-                                                className="bg-green-900/30 border border-green-700/50 p-6 rounded-xl text-center"
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="bg-red-900/30 border border-red-700/50 p-4 rounded-xl mb-6"
                                             >
-                                                <div className="flex justify-center mb-4">
-                                                    <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center text-green-500">
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            className="h-8 w-8"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                            stroke="currentColor"
-                                                        >
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                strokeWidth={2}
-                                                                d="M5 13l4 4L19 7"
-                                                            />
-                                                        </svg>
-                                                    </div>
+                                                <div className="flex items-center mb-2">
+                                                    <FiAlertCircle className="text-red-500 mr-2" />
+                                                    <h4 className="text-red-400 font-medium">Please fix the following errors:</h4>
                                                 </div>
-                                                <h3 className="text-xl font-bold text-gray-100 mb-2">
-                                                    Message Sent!
-                                                </h3>
-                                                <p className="text-gray-300">
-                                                    Thank you for contacting me.
-                                                    I will respond as soon as
-                                                    possible.
-                                                </p>
+                                                <ul className="text-red-300 text-sm space-y-1">
+                                                    {validationErrors.map((error, index) => (
+                                                        <li key={index}>• {error}</li>
+                                                    ))}
+                                                </ul>
                                             </motion.div>
-                                        ) : (
-                                            <form
-                                                className="space-y-6"
-                                                onSubmit={handleSubmit}
-                                            >
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                    <div>
-                                                        <label
-                                                            htmlFor="name"
-                                                            className="flex items-center text-sm font-medium text-gray-300 mb-2"
-                                                        >
-                                                            <FiUser className="mr-2 text-primary" />
-                                                            Your Name
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            id="name"
-                                                            value={
-                                                                formState.name
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full px-4 py-3 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-gray-800/50 text-gray-100 backdrop-blur-sm transition-all"
-                                                            placeholder="Enter your name"
-                                                            required
-                                                        />
-                                                    </div>
+                                        )}
 
-                                                    <div>
-                                                        <label
-                                                            htmlFor="email"
-                                                            className="flex items-center text-sm font-medium text-gray-300 mb-2"
-                                                        >
-                                                            <FiMail className="mr-2 text-primary" />
-                                                            Email
-                                                        </label>
-                                                        <input
-                                                            type="email"
-                                                            id="email"
-                                                            value={
-                                                                formState.email
-                                                            }
-                                                            onChange={
-                                                                handleChange
-                                                            }
-                                                            className="w-full px-4 py-3 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-gray-800/50 text-gray-100 backdrop-blur-sm transition-all"
-                                                            placeholder="your.email@example.com"
-                                                            required
-                                                        />
-                                                    </div>
-                                                </div>
-
+                                        {/* Contact Form */}
+                                        <form
+                                            className="space-y-6"
+                                            onSubmit={handleSubmit}
+                                        >
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div>
                                                     <label
-                                                        htmlFor="subject"
+                                                        htmlFor="name"
                                                         className="flex items-center text-sm font-medium text-gray-300 mb-2"
                                                     >
-                                                        <FiEdit className="mr-2 text-primary" />
-                                                        Subject
+                                                        <FiUser className="mr-2 text-primary" />
+                                                        Your Name
                                                     </label>
                                                     <input
                                                         type="text"
-                                                        id="subject"
+                                                        id="name"
                                                         value={
-                                                            formState.subject
+                                                            formState.name
                                                         }
-                                                        onChange={handleChange}
+                                                        onChange={
+                                                            handleChange
+                                                        }
                                                         className="w-full px-4 py-3 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-gray-800/50 text-gray-100 backdrop-blur-sm transition-all"
-                                                        placeholder="Enter message subject"
+                                                        placeholder="Enter your name"
+                                                        required
                                                     />
                                                 </div>
 
                                                 <div>
                                                     <label
-                                                        htmlFor="message"
+                                                        htmlFor="email"
                                                         className="flex items-center text-sm font-medium text-gray-300 mb-2"
                                                     >
-                                                        <FiMessageSquare className="mr-2 text-primary" />
-                                                        Message
+                                                        <FiMail className="mr-2 text-primary" />
+                                                        Email
                                                     </label>
-                                                    <textarea
-                                                        id="message"
-                                                        rows={5}
+                                                    <input
+                                                        type="email"
+                                                        id="email"
                                                         value={
-                                                            formState.message
+                                                            formState.email
                                                         }
-                                                        onChange={handleChange}
+                                                        onChange={
+                                                            handleChange
+                                                        }
                                                         className="w-full px-4 py-3 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-gray-800/50 text-gray-100 backdrop-blur-sm transition-all"
-                                                        placeholder="Enter your message"
+                                                        placeholder="your.email@example.com"
                                                         required
-                                                    ></textarea>
+                                                    />
                                                 </div>
+                                            </div>
 
-                                                <div>
-                                                    <motion.button
-                                                        type="submit"
-                                                        disabled={isSubmitting}
-                                                        whileHover={{
-                                                            scale: 1.02,
-                                                        }}
-                                                        whileTap={{
-                                                            scale: 0.98,
-                                                        }}
-                                                        className={`w-full inline-flex justify-center items-center py-3 px-6 text-base font-medium rounded-lg shadow-lg transition-all duration-300 ${
-                                                            isSubmitting
-                                                                ? "bg-gray-700 text-gray-300 cursor-not-allowed"
-                                                                : "bg-gradient-to-r from-primary to-secondary text-white hover:shadow-primary-glow"
+                                            <div>
+                                                <label
+                                                    htmlFor="subject"
+                                                    className="flex items-center text-sm font-medium text-gray-300 mb-2"
+                                                >
+                                                    <FiEdit className="mr-2 text-primary" />
+                                                    Subject
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="subject"
+                                                    value={
+                                                        formState.subject
+                                                    }
+                                                    onChange={handleChange}
+                                                    className="w-full px-4 py-3 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-gray-800/50 text-gray-100 backdrop-blur-sm transition-all"
+                                                    placeholder="Enter message subject"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    htmlFor="message"
+                                                    className="flex items-center text-sm font-medium text-gray-300 mb-2"
+                                                >
+                                                    <FiMessageSquare className="mr-2 text-primary" />
+                                                    Message
+                                                </label>
+                                                <textarea
+                                                    id="message"
+                                                    rows={5}
+                                                    value={
+                                                        formState.message
+                                                    }
+                                                    onChange={handleChange}
+                                                    className="w-full px-4 py-3 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-gray-800/50 text-gray-100 backdrop-blur-sm transition-all"
+                                                    placeholder="Enter your message"
+                                                    required
+                                                ></textarea>
+                                            </div>
+
+                                            <div>
+                                                <motion.button
+                                                    type="submit"
+                                                    disabled={isSubmitting}
+                                                    whileHover={{
+                                                        scale: 1.02,
+                                                    }}
+                                                    whileTap={{
+                                                        scale: 0.98,
+                                                    }}
+                                                    className={`w-full inline-flex justify-center items-center py-3 px-6 text-base font-medium rounded-lg shadow-lg transition-all duration-300 ${isSubmitting
+                                                        ? "bg-gray-700 text-gray-300 cursor-not-allowed"
+                                                        : "bg-gradient-to-r from-primary to-secondary text-white hover:shadow-primary-glow"
                                                         }`}
-                                                    >
-                                                        {isSubmitting ? (
-                                                            <>
-                                                                <svg
-                                                                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    fill="none"
-                                                                    viewBox="0 0 24 24"
-                                                                >
-                                                                    <circle
-                                                                        className="opacity-25"
-                                                                        cx="12"
-                                                                        cy="12"
-                                                                        r="10"
-                                                                        stroke="currentColor"
-                                                                        strokeWidth="4"
-                                                                    ></circle>
-                                                                    <path
-                                                                        className="opacity-75"
-                                                                        fill="currentColor"
-                                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                                                    ></path>
-                                                                </svg>
-                                                                Sending...
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                Send Message{" "}
-                                                                <FiSend className="ml-2" />
-                                                            </>
-                                                        )}
-                                                    </motion.button>
-                                                </div>
-                                            </form>
-                                        )}
+                                                >
+                                                    {isSubmitting ? (
+                                                        <>
+                                                            <svg
+                                                                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <circle
+                                                                    className="opacity-25"
+                                                                    cx="12"
+                                                                    cy="12"
+                                                                    r="10"
+                                                                    stroke="currentColor"
+                                                                    strokeWidth="4"
+                                                                ></circle>
+                                                                <path
+                                                                    className="opacity-75"
+                                                                    fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                                ></path>
+                                                            </svg>
+                                                            Sending...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            Send Message{" "}
+                                                            <FiSend className="ml-2" />
+                                                        </>
+                                                    )}
+                                                </motion.button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </motion.div>
                             </div>
@@ -434,6 +437,23 @@ export default function ContactPage() {
                     </div>
                 </div>
             </section>
+
+            {/* Toast Notifications */}
+            <Toast
+                type="success"
+                title="Message Sent Successfully!"
+                message="Thank you for contacting me. I will respond as soon as possible."
+                isVisible={showSuccessToast}
+                onClose={() => setShowSuccessToast(false)}
+            />
+
+            <Toast
+                type="error"
+                title="Failed to Send Message"
+                message={submitError || "An unexpected error occurred. Please try again."}
+                isVisible={showErrorToast}
+                onClose={() => setShowErrorToast(false)}
+            />
         </MainLayout>
     );
 }

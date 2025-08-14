@@ -27,9 +27,9 @@ export const metadata: Metadata = {
         "React",
     ],
     icons: {
-        icon: "/logo.png",
-        shortcut: "/logo.png",
-        apple: "/logo.png",
+        icon: "/images/ui/logo.png",
+        shortcut: "/images/ui/logo.png",
+        apple: "/images/ui/logo.png",
     },
     manifest: "/manifest.json",
     themeColor: "#030712",

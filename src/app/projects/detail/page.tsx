@@ -6,12 +6,8 @@ import {
     FiExternalLink,
     FiGithub,
     FiArrowLeft,
-    FiCalendar,
     FiTag,
     FiLayers,
-    FiCpu,
-    FiUsers,
-    FiUser,
 } from "react-icons/fi";
 import Link from "next/link";
 import Image from "next/image";
@@ -58,12 +54,13 @@ function ProjectDetailContent() {
             (p) => p.title.toLowerCase() === projectTitle.toLowerCase()
         );
 
-        // Only allow EzClip and Decision Tree Visualization projects
+        // Only allow specific projects with detailed information
         if (
             !foundProject ||
             (foundProject.title !== "EzClip" &&
                 foundProject.title !== "Decision Tree Visualization" &&
-                foundProject.title !== "Deeplearning-Practice")
+                foundProject.title !== "Deeplearning-Practice" &&
+                foundProject.title !== "SciHorizone - IELTS Exam Generator")
         ) {
             router.push("/projects");
             return;
@@ -77,55 +74,72 @@ function ProjectDetailContent() {
             images: foundProject.image ? [foundProject.image] : [],
             features: foundProject.details || [],
             challenges:
-                foundProject.title === "Deeplearning-Practice"
+                foundProject.title === "SciHorizone - IELTS Exam Generator"
                     ? [
-                          "Implementing complex neural network architectures from scratch",
-                          "Optimizing model performance for various tasks",
-                          "Ensuring proper data preprocessing for different domains",
-                          "Balancing model complexity with training efficiency",
-                          "Documenting implementations with clear explanations",
-                      ]
-                    : [
-                          "Building an intuitive user interface",
-                          "Ensuring cross-platform compatibility",
-                          "Optimizing performance for all users",
-                      ],
-            results:
-                foundProject.title === "Deeplearning-Practice"
-                    ? [
-                          "Comprehensive library of deep learning implementations",
-                          "Successfully applied models to real-world datasets",
-                          "Well-documented code showcasing best practices",
-                          "Educational resource for understanding deep learning concepts",
-                          "Organized structure by application domains",
-                      ]
-                    : [
-                          "Successfully deployed and available for public use",
-                          "Positive user feedback on functionality and design",
-                          "Continuous improvement based on community input",
-                      ],
-            technologies:
-                foundProject.title === "EzClip"
-                    ? ["JavaScript", "Electron.js", "HTML", "CSS", "Node.js"]
+                        "Integrating Google Gemini AI for intelligent question generation",
+                        "Implementing robust PDF processing with multiple extraction methods",
+                        "Creating professional exam interface that mimics real IELTS/TOEIC tests",
+                        "Developing automated grading system with detailed explanations",
+                        "Ensuring scalability and performance for production deployment",
+                        "Handling various PDF formats and scientific document structures",
+                    ]
                     : foundProject.title === "Deeplearning-Practice"
+                        ? [
+                            "Implementing complex neural network architectures from scratch",
+                            "Optimizing model performance for various tasks",
+                            "Ensuring proper data preprocessing for different domains",
+                            "Balancing model complexity with training efficiency",
+                            "Documenting implementations with clear explanations",
+                        ]
+                        : [
+                            "Building an intuitive user interface",
+                            "Ensuring cross-platform compatibility",
+                            "Optimizing performance for all users",
+                        ],
+            results:
+                foundProject.title === "SciHorizone - IELTS Exam Generator"
                     ? [
-                          "Python",
-                          "PyTorch",
-                          "Numpy",
-                          "Pandas",
-                          "Matplotlib",
-                          "Scikit-learn",
-                          "TensorFlow",
-                      ]
-                    : [
-                          "Python",
-                          "FastAPI",
-                          "scikit-learn",
-                          "HTML",
-                          "CSS",
-                          "JavaScript",
-                          "TailwindCSS",
-                      ],
+                        "Successfully deployed AI-powered exam generation system",
+                        "Achieved high accuracy in question generation using Google Gemini AI",
+                        "Implemented robust PDF processing supporting various scientific document formats",
+                        "Created professional exam interface with timer and navigation features",
+                        "Deployed production-ready application with Docker containerization",
+                        "Positive user feedback on exam quality and user experience",
+                        "Automated grading system with detailed explanations and analysis",
+                    ]
+                    : foundProject.title === "Deeplearning-Practice"
+                        ? [
+                            "Comprehensive library of deep learning implementations",
+                            "Successfully applied models to real-world datasets",
+                            "Well-documented code showcasing best practices",
+                            "Educational resource for understanding deep learning concepts",
+                            "Organized structure by application domains",
+                        ]
+                        : [
+                            "Successfully deployed and available for public use",
+                            "Positive user feedback on functionality and design",
+                            "Continuous improvement based on community input",
+                        ],
+            technologies:
+                foundProject.title === "SciHorizone - IELTS Exam Generator"
+                    ? ["Next.js", "FastAPI", "Google Gemini AI", "Python", "TypeScript", "Tailwind CSS", "Docker", "docling-serve"]
+                    : foundProject.title === "EzClip"
+                        ? ["JavaScript", "Electron.js", "HTML", "CSS", "Node.js"]
+                        : foundProject.title === "Deeplearning-Practice"
+                            ? [
+                                "Python",
+                                "PyTorch",
+                                "Wandb",
+                            ]
+                            : [
+                                "Python",
+                                "FastAPI",
+                                "scikit-learn",
+                                "HTML",
+                                "CSS",
+                                "JavaScript",
+                                "TailwindCSS",
+                            ],
         };
 
         setProject(projectData);
@@ -171,8 +185,9 @@ function ProjectDetailContent() {
                         src={project.coverImage || "/project-placeholder.jpg"}
                         alt={project.title}
                         fill
-                        className="object-cover opacity-50"
+                        className="object-cover object-center opacity-50"
                         priority
+                        sizes="100vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-gray-900/70 to-gray-900/90"></div>
                 </div>
@@ -345,11 +360,10 @@ function ProjectDetailContent() {
                                         >
                                             <Image
                                                 src={image}
-                                                alt={`${
-                                                    project.title
-                                                } - Image ${index + 1}`}
+                                                alt={`${project.title} - Image ${index + 1}`}
                                                 fill
-                                                className="object-cover"
+                                                className="object-cover object-center"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             />
                                         </motion.div>
                                     ))}

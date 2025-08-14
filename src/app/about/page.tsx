@@ -2,6 +2,7 @@
 
 import { MainLayout } from "@/components/layout/main-layout";
 import { profile } from "@/data/profile";
+import { ImagePaths } from "@/utils/image-paths";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
@@ -20,18 +21,19 @@ export default function AboutPage() {
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        offset: ["start start", "end end"],
+        offset: ["start start", "end start"],
     });
 
+    // Giữ nguyên hiệu ứng fade-in/fade-out nhưng điều chỉnh để không quá mờ ở cuối
     const opacity = useTransform(
         scrollYProgress,
         [0, 0.2, 0.8, 1],
-        [0.3, 1, 1, 0.3]
+        [0.3, 1, 1, 0.7]
     );
     const scale = useTransform(
         scrollYProgress,
         [0, 0.2, 0.8, 1],
-        [0.8, 1, 1, 0.8]
+        [0.8, 1, 1, 0.95]
     );
 
     return (
@@ -75,7 +77,7 @@ export default function AboutPage() {
                                     className="relative group rounded-xl overflow-hidden shadow-lg border border-gray-700/50 w-full h-[350px]"
                                 >
                                     <Image
-                                        src="/profile.jpg"
+                                        src={ImagePaths.profile.profile}
                                         alt={profile.name}
                                         fill
                                         className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -460,7 +462,7 @@ export default function AboutPage() {
                     style={{ opacity, scale }}
                     className="max-w-4xl mx-auto mb-12"
                 >
-                    <h2 className="text-3xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+                    <h2 className="w-full text-3xl font-bold mb-10 text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                         Interests
                     </h2>
                     <div className="flex flex-wrap justify-center gap-4">

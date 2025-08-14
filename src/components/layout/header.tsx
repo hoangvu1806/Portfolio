@@ -5,12 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { FiMenu, FiX, FiCode } from "react-icons/fi";
+import { ImagePaths } from "@/utils/image-paths";
 import Image from "next/image";
 
 const navItems = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Projects", path: "/projects" },
+    { name: "Blog", path: "/blog" },
     { name: "Resume", path: "/resume" },
     { name: "Contact", path: "/contact" },
 ];
@@ -30,9 +32,8 @@ export function Header() {
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-                scrolled ? "header-blur py-3 shadow-sm" : "bg-transparent py-5"
-            }`}
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "header-blur py-3 shadow-sm" : "bg-transparent py-5"
+                }`}
         >
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex items-center justify-between">
@@ -45,7 +46,7 @@ export function Header() {
                         >
                             <div className="w-10 h-10 rounded-lg overflow-hidden mr-2">
                                 <Image
-                                    src="/logo.png"
+                                    src={ImagePaths.ui.logo}
                                     alt="Logo"
                                     width={40}
                                     height={40}
@@ -77,11 +78,10 @@ export function Header() {
                             >
                                 <Link
                                     href={item.path}
-                                    className={`relative text-sm font-medium transition-colors px-2 py-1 rounded-md ${
-                                        pathname === item.path
-                                            ? "text-primary bg-primary/20 font-semibold"
-                                            : "text-gray-100 hover:text-primary"
-                                    }`}
+                                    className={`relative text-sm font-medium transition-colors px-2 py-1 rounded-md ${pathname === item.path
+                                        ? "text-primary bg-primary/20 font-semibold"
+                                        : "text-gray-100 hover:text-primary"
+                                        }`}
                                 >
                                     {item.name}
                                     {pathname === item.path && (
@@ -127,11 +127,10 @@ export function Header() {
                             <Link
                                 key={item.name}
                                 href={item.path}
-                                className={`text-base flex items-center py-2 px-3 rounded-md ${
-                                    pathname === item.path
-                                        ? "text-primary bg-primary/20 font-medium"
-                                        : "text-gray-100 hover:bg-gray-800"
-                                }`}
+                                className={`text-base flex items-center py-2 px-3 rounded-md ${pathname === item.path
+                                    ? "text-primary bg-primary/20 font-medium"
+                                    : "text-gray-100 hover:bg-gray-800"
+                                    }`}
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 <span className="mr-2">•</span>

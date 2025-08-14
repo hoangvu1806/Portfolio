@@ -15,6 +15,8 @@ import {
 } from "react-icons/fi";
 import Image from "next/image";
 import { profile } from "@/data/profile";
+import { ImagePaths } from "@/utils/image-paths";
+import { ProjectImage } from "@/components/ui/project-image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { DynamicBackground } from "@/components/ui/dynamic-background";
@@ -24,20 +26,20 @@ import { useEffect, useState } from "react";
 export default function Home() {
     const [glowIntensity, setGlowIntensity] = useState(0.5);
     const [isAvatarHovered, setIsAvatarHovered] = useState(false);
-    
+
     // Subtle breathing animation for the avatar glow
     useEffect(() => {
         const interval = setInterval(() => {
-            setGlowIntensity(prev => {
+            setGlowIntensity((prev) => {
                 // Oscillate between 0.4 and 0.6 for subtle effect
                 const newValue = prev + 0.005 * (Math.random() > 0.5 ? 1 : -1);
                 return Math.max(0.4, Math.min(0.6, newValue));
             });
         }, 100);
-        
+
         return () => clearInterval(interval);
     }, []);
-    
+
     const introTexts = [
         "AI Engineer specializing in generative AI programming, advanced large language models, and multimodal visual processing.",
         "Extensive experience developing enterprise-grade chatbot systems and voice interaction pipelines optimized for high-concurrency environments.",
@@ -138,35 +140,37 @@ export default function Home() {
                             }}
                             className="md:col-span-5 relative flex justify-center"
                         >
-                            <motion.div 
+                            <motion.div
                                 className="relative z-10 w-64 h-64 md:w-80 md:h-80 bg-gradient-primary rounded-full flex items-center justify-center overflow-hidden shadow-primary-glow cursor-pointer"
                                 onHoverStart={() => setIsAvatarHovered(true)}
                                 onHoverEnd={() => setIsAvatarHovered(false)}
-                                whileHover={{ 
+                                whileHover={{
                                     scale: 1.02,
-                                    transition: { duration: 0.3 } 
+                                    transition: { duration: 0.3 },
                                 }}
                                 whileTap={{ scale: 0.98 }}
                             >
                                 {/* Inner glow effect with dynamic intensity */}
-                                <motion.div 
+                                <motion.div
                                     className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/40 to-secondary/40 z-10"
-                                    animate={{ 
-                                        opacity: isAvatarHovered ? 0.7 : glowIntensity 
+                                    animate={{
+                                        opacity: isAvatarHovered
+                                            ? 0.7
+                                            : glowIntensity,
                                     }}
                                     transition={{ duration: 0.5 }}
                                 ></motion.div>
-                                
+
                                 {/* Avatar container with focus effect */}
                                 <div className="relative w-[94%] h-[94%] rounded-full overflow-hidden z-20">
                                     {/* Vignette overlay for edge blur effect */}
                                     <div className="absolute inset-0 rounded-full shadow-[inset_0_0_20px_10px_rgba(0,0,0,0.3)] z-30"></div>
-                                    
-                                    <Image 
-                                        src="/avatar.jpg" 
+
+                                    <Image
+                                        src={ImagePaths.profile.avatar}
                                         alt={`${profile.name}'s avatar`}
-                                        width={320} 
-                                        height={320} 
+                                        width={320}
+                                        height={320}
                                         className="object-cover w-full h-full scale-110 rounded-full filter saturate-[1.1] contrast-[1.05]"
                                         style={{
                                             objectPosition: "center 40%", // Adjust to focus more on the face
@@ -174,13 +178,17 @@ export default function Home() {
                                         priority
                                     />
                                 </div>
-                                
+
                                 {/* Outer glow ring with dynamic intensity */}
-                                <motion.div 
+                                <motion.div
                                     className="absolute -inset-1 rounded-full bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/30 blur-sm -z-10"
-                                    animate={{ 
-                                        opacity: isAvatarHovered ? 0.85 : glowIntensity + 0.2,
-                                        scale: isAvatarHovered ? 1.03 : 1 + (glowIntensity - 0.5) * 0.02
+                                    animate={{
+                                        opacity: isAvatarHovered
+                                            ? 0.85
+                                            : glowIntensity + 0.2,
+                                        scale: isAvatarHovered
+                                            ? 1.03
+                                            : 1 + (glowIntensity - 0.5) * 0.02,
                                     }}
                                     transition={{ duration: 0.5 }}
                                 ></motion.div>
@@ -277,11 +285,10 @@ export default function Home() {
                                     (lang, index, arr) => (
                                         <p
                                             key={index}
-                                            className={`text-gray-300 ${
-                                                index < arr.length - 1
+                                            className={`text-gray-300 ${index < arr.length - 1
                                                     ? "mb-3"
                                                     : ""
-                                            }`}
+                                                }`}
                                         >
                                             {lang.language} - {lang.level}
                                         </p>
@@ -342,15 +349,14 @@ export default function Home() {
                                     )}
                                     <div>
                                         <h3
-                                            className={`font-semibold text-xl mb-4 ${
-                                                index === 0
+                                            className={`font-semibold text-xl mb-4 ${index === 0
                                                     ? "text-primary text-shadow-primary"
                                                     : index === 1
-                                                    ? "text-secondary text-shadow-secondary"
-                                                    : index === 2
-                                                    ? "text-accent text-shadow-accent"
-                                                    : "text-primary text-shadow-primary"
-                                            }`}
+                                                        ? "text-secondary text-shadow-secondary"
+                                                        : index === 2
+                                                            ? "text-accent text-shadow-accent"
+                                                            : "text-primary text-shadow-primary"
+                                                }`}
                                         >
                                             {skill.category}
                                         </h3>
@@ -361,15 +367,14 @@ export default function Home() {
                                                     className="text-gray-300 flex items-center gap-2"
                                                 >
                                                     <span
-                                                        className={`w-2 h-2 rounded-full ${
-                                                            index === 0
+                                                        className={`w-2 h-2 rounded-full ${index === 0
                                                                 ? "bg-primary"
                                                                 : index === 1
-                                                                ? "bg-secondary"
-                                                                : index === 2
-                                                                ? "bg-accent"
-                                                                : "bg-primary"
-                                                        }`}
+                                                                    ? "bg-secondary"
+                                                                    : index === 2
+                                                                        ? "bg-accent"
+                                                                        : "bg-primary"
+                                                            }`}
                                                     ></span>
                                                     {item}
                                                 </li>
@@ -417,42 +422,28 @@ export default function Home() {
                                 }}
                                 className="overflow-hidden backdrop-blur-sm bg-gray-900/30 rounded-lg border border-gray-700/50"
                             >
-                                <div className="h-40 bg-gradient-primary relative overflow-hidden">
-                                    <div className="absolute inset-0 flex items-center justify-center text-white opacity-60">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width="80"
-                                            height="80"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="1"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                            <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
-                                            <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
-                                            <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
-                                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                                            <line
-                                                x1="12"
-                                                y1="22.08"
-                                                x2="12"
-                                                y2="12"
-                                            ></line>
-                                        </svg>
-                                    </div>
+                                <div className="h-40 relative overflow-hidden rounded-t-lg">
+                                    <ProjectImage
+                                        src={
+                                            project.thumbnail ||
+                                            project.image ||
+                                            "/images/ui/project-placeholder.svg"
+                                        }
+                                        alt={project.title}
+                                        title={project.title}
+                                        className="w-full h-full object-cover object-center"
+                                        priority={index === 0}
+                                        enableZoom={true}
+                                    />
                                 </div>
                                 <div className="p-6">
                                     <h3
-                                        className={`font-semibold text-xl mb-3 ${
-                                            index === 0
+                                        className={`font-semibold text-xl mb-3 ${index === 0
                                                 ? "text-primary text-shadow-primary"
                                                 : index === 1
-                                                ? "text-secondary text-shadow-secondary"
-                                                : "text-accent text-shadow-accent"
-                                        }`}
+                                                    ? "text-secondary text-shadow-secondary"
+                                                    : "text-accent text-shadow-accent"
+                                            }`}
                                     >
                                         {project.title}
                                     </h3>
@@ -475,13 +466,12 @@ export default function Home() {
                                     )}
                                     <Link
                                         href="/projects"
-                                        className={`hover:text-${
-                                            index === 0
+                                        className={`hover:text-${index === 0
                                                 ? "primary"
                                                 : index === 1
-                                                ? "secondary"
-                                                : "accent"
-                                        } font-medium inline-flex items-center transition-colors`}
+                                                    ? "secondary"
+                                                    : "accent"
+                                            } font-medium inline-flex items-center transition-colors`}
                                     >
                                         View Details
                                         <FiArrowRight className="ml-2" />

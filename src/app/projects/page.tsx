@@ -2,6 +2,8 @@
 
 import { MainLayout } from "@/components/layout/main-layout";
 import { profile } from "@/data/profile";
+import { ProjectImage } from "@/components/ui/project-image";
+import { hasDemo, hasGithub } from "@/types/project";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     FiExternalLink,
@@ -15,7 +17,6 @@ import {
 } from "react-icons/fi";
 import Link from "next/link";
 import { useState, useRef } from "react";
-import Image from "next/image";
 
 export default function ProjectsPage() {
     const allProjects = [...profile.projects, ...profile.personalProjects];
@@ -108,11 +109,10 @@ export default function ProjectsPage() {
                                     onClick={() => setActiveFilter(category.id)}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className={`px-4 py-2 rounded-lg flex items-center text-sm font-medium transition-all duration-300 ${
-                                        activeFilter === category.id
-                                            ? "bg-gradient-to-r from-primary to-secondary text-white shadow-primary-glow"
-                                            : "bg-gray-800/70 text-gray-300 hover:bg-gray-700/70"
-                                    }`}
+                                    className={`px-4 py-2 rounded-lg flex items-center text-sm font-medium transition-all duration-300 ${activeFilter === category.id
+                                        ? "bg-gradient-to-r from-primary to-secondary text-white shadow-primary-glow"
+                                        : "bg-gray-800/70 text-gray-300 hover:bg-gray-700/70"
+                                        }`}
                                 >
                                     {category.icon}
                                     {category.label}
@@ -188,7 +188,7 @@ export default function ProjectsPage() {
                             </button>
                         </motion.div>
                     ) : (
-                        <div className="grid gap-8 md:gap-10">
+                        <div className="grid gap-6 md:gap-8">
                             <AnimatePresence>
                                 {filteredProjects
                                     .filter((p) => p.featured)
@@ -197,53 +197,55 @@ export default function ProjectsPage() {
                                             key={project.title}
                                             variants={itemVariants}
                                             layout
-                                            className="relative backdrop-blur-sm bg-gray-900/30 rounded-2xl overflow-hidden shadow-xl border border-gray-700/50 group"
+                                            className="project-card-featured relative backdrop-blur-sm bg-gray-900/30 rounded-xl overflow-hidden shadow-lg border border-gray-700/50 group hover:shadow-xl transition-all duration-300"
                                         >
                                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-accent"></div>
 
-                                            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                                                <div className="md:col-span-5 relative min-h-[250px] md:min-h-full">
-                                                    <Image
+                                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 lg:gap-6">
+                                                <div className="lg:col-span-4 project-image-container relative h-[200px] lg:h-auto overflow-hidden">
+                                                    <ProjectImage
                                                         src={
                                                             project.image ||
-                                                            "/project-placeholder.jpg"
+                                                            "/images/ui/project-placeholder.svg"
                                                         }
                                                         alt={project.title}
-                                                        fill
-                                                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                                        title={project.title}
+                                                        className="w-full h-full object-cover object-center"
+                                                        priority={index < 3}
+                                                        enableZoom={true}
                                                     />
-                                                    <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/40 to-transparent"></div>
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent lg:bg-gradient-to-r lg:from-gray-900/60 lg:via-gray-900/20 lg:to-transparent"></div>
 
-                                                    <div className="absolute bottom-0 left-0 p-6 z-10">
+                                                    <div className="absolute bottom-0 left-0 p-4 z-10">
                                                         {project.type && (
-                                                            <span className="inline-block bg-primary-900/70 backdrop-blur-sm text-primary-300 text-sm px-3 py-1 rounded-full mb-3">
+                                                            <span className="inline-block bg-primary-900/80 backdrop-blur-sm text-primary-200 text-xs px-3 py-1.5 rounded-full font-medium">
                                                                 {project.type}
                                                             </span>
                                                         )}
                                                     </div>
                                                 </div>
 
-                                                <div className="md:col-span-7 p-6 md:p-8 flex flex-col">
-                                                    <h2 className="text-2xl md:text-3xl font-bold text-gray-100 mb-4">
+                                                <div className="lg:col-span-8 p-6 flex flex-col">
+                                                    <h2 className="text-xl lg:text-2xl font-bold text-gray-100 mb-3">
                                                         {project.title}
                                                     </h2>
 
-                                                    <p className="text-gray-300 mb-6 flex-grow">
+                                                    <p className="text-gray-300 text-sm lg:text-base mb-4 flex-grow line-clamp-3">
                                                         {project.description}
                                                     </p>
 
                                                     {project.details &&
                                                         project.details.length >
-                                                            0 && (
-                                                            <div className="mb-6">
-                                                                <h3 className="text-lg font-medium text-gray-200 mb-3">
+                                                        0 && (
+                                                            <div className="mb-4">
+                                                                <h3 className="text-base font-medium text-gray-200 mb-2">
                                                                     Key Features
                                                                 </h3>
-                                                                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
+                                                                <ul className="grid grid-cols-1 lg:grid-cols-2 gap-y-1 gap-x-3">
                                                                     {project.details
                                                                         .slice(
                                                                             0,
-                                                                            4
+                                                                            6
                                                                         )
                                                                         .map(
                                                                             (
@@ -254,12 +256,12 @@ export default function ProjectsPage() {
                                                                                     key={
                                                                                         i
                                                                                     }
-                                                                                    className="flex items-start text-gray-300"
+                                                                                    className="flex items-start text-gray-300 text-sm"
                                                                                 >
-                                                                                    <span className="text-primary mr-2 mt-1">
+                                                                                    <span className="text-primary mr-2 mt-1 text-xs">
                                                                                         •
                                                                                     </span>
-                                                                                    <span>
+                                                                                    <span className="line-clamp-2">
                                                                                         {
                                                                                             detail
                                                                                         }
@@ -270,44 +272,108 @@ export default function ProjectsPage() {
                                                                 </ul>
                                                                 {project.details
                                                                     .length >
-                                                                    4 && (
-                                                                    <p className="text-primary mt-2 text-sm">
-                                                                        +
-                                                                        {project
-                                                                            .details
-                                                                            .length -
-                                                                            4}{" "}
-                                                                        more
-                                                                        features
-                                                                    </p>
-                                                                )}
+                                                                    6 && (
+                                                                        <p className="text-primary mt-1 text-xs">
+                                                                            +
+                                                                            {project
+                                                                                .details
+                                                                                .length -
+                                                                                6}{" "}
+                                                                            more features
+                                                                        </p>
+                                                                    )}
                                                             </div>
                                                         )}
 
-                                                    <div className="flex flex-wrap gap-4 mt-auto">
+                                                    {/* Tech Stack */}
+                                                    {'techStack' in project && project.techStack && project.techStack.length > 0 && (
+                                                        <div className="mb-3">
+                                                            <h3 className="text-sm font-medium text-gray-200 mb-2">
+                                                                Tech Stack
+                                                            </h3>
+                                                            <div className="flex flex-wrap gap-1.5">
+                                                                {project.techStack.slice(0, 8).map((tech, i) => (
+                                                                    <span
+                                                                        key={i}
+                                                                        className="inline-block bg-gray-800/60 text-gray-300 text-xs px-2.5 py-1 rounded-md border border-gray-700/30"
+                                                                    >
+                                                                        {tech}
+                                                                    </span>
+                                                                ))}
+                                                                {project.techStack.length > 8 && (
+                                                                    <span className="inline-block text-gray-400 text-xs px-2 py-1">
+                                                                        +{project.techStack.length - 8} more
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Highlights */}
+                                                    {'highlights' in project && project.highlights && project.highlights.length > 0 && (
+                                                        <div className="mb-4">
+                                                            <h3 className="text-sm font-medium text-gray-200 mb-2">
+                                                                Highlights
+                                                            </h3>
+                                                            <ul className="space-y-1">
+                                                                {project.highlights.slice(0, 3).map((highlight, i) => (
+                                                                    <li
+                                                                        key={i}
+                                                                        className="flex items-start text-gray-300 text-xs"
+                                                                    >
+                                                                        <span className="mr-2 mt-0.5 text-sm">
+                                                                            {highlight.split(' ')[0]}
+                                                                        </span>
+                                                                        <span className="line-clamp-1">
+                                                                            {highlight.split(' ').slice(1).join(' ')}
+                                                                        </span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="flex flex-wrap gap-3 mt-auto pt-2">
                                                         <motion.div
                                                             whileHover={{
-                                                                scale: 1.05,
+                                                                scale: 1.02,
                                                             }}
                                                             whileTap={{
-                                                                scale: 0.95,
+                                                                scale: 0.98,
                                                             }}
                                                         >
                                                             <Link
-                                                                href={
-                                                                    project.demoUrl ||
-                                                                    `/projects/detail?project=${encodeURIComponent(
-                                                                        project.title
-                                                                    )}`
-                                                                }
-                                                                className="inline-flex items-center px-5 py-2.5 font-medium bg-gradient-to-r from-primary to-secondary text-white rounded-lg shadow-lg hover:shadow-primary-glow transition-all"
+                                                                href={`/projects/detail?project=${encodeURIComponent(
+                                                                    project.title
+                                                                )}`}
+                                                                className="inline-flex items-center px-4 py-2 text-sm font-medium bg-gradient-to-r from-primary to-secondary text-white rounded-lg shadow-md hover:shadow-lg transition-all"
                                                             >
                                                                 Details{" "}
-                                                                <FiExternalLink className="ml-2" />
+                                                                <FiExternalLink className="ml-1.5 w-4 h-4" />
                                                             </Link>
                                                         </motion.div>
 
-                                                        {project.githubUrl && (
+                                                        {hasDemo(project) && (
+                                                            <motion.div
+                                                                whileHover={{
+                                                                    scale: 1.02,
+                                                                }}
+                                                                whileTap={{
+                                                                    scale: 0.98,
+                                                                }}
+                                                            >
+                                                                <Link
+                                                                    href={project.demoUrl}
+                                                                    target="_blank"
+                                                                    className="inline-flex items-center px-4 py-2 text-sm font-medium bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                                                                >
+                                                                    Live Demo{" "}
+                                                                    <FiExternalLink className="ml-1.5 w-4 h-4" />
+                                                                </Link>
+                                                            </motion.div>
+                                                        )}
+
+                                                        {hasGithub(project) && (
                                                             <motion.div
                                                                 whileHover={{
                                                                     scale: 1.05,
@@ -317,9 +383,7 @@ export default function ProjectsPage() {
                                                                 }}
                                                             >
                                                                 <Link
-                                                                    href={
-                                                                        project.githubUrl
-                                                                    }
+                                                                    href={project.githubUrl}
                                                                     target="_blank"
                                                                     className="inline-flex items-center px-5 py-2.5 font-medium bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
                                                                 >
@@ -378,12 +442,9 @@ export default function ProjectsPage() {
                                                             }}
                                                         >
                                                             <Link
-                                                                href={
-                                                                    project.demoUrl ||
-                                                                    `/projects/detail?project=${encodeURIComponent(
-                                                                        project.title
-                                                                    )}`
-                                                                }
+                                                                href={`/projects/detail?project=${encodeURIComponent(
+                                                                    project.title
+                                                                )}`}
                                                                 className="inline-flex items-center text-sm px-3 py-1.5 font-medium bg-primary-900/30 text-primary-300 rounded-md hover:bg-primary-900/50 transition-colors"
                                                             >
                                                                 Details{" "}
@@ -391,7 +452,7 @@ export default function ProjectsPage() {
                                                             </Link>
                                                         </motion.div>
 
-                                                        {project.githubUrl && (
+                                                        {hasDemo(project) && (
                                                             <motion.div
                                                                 whileHover={{
                                                                     scale: 1.05,
@@ -401,9 +462,27 @@ export default function ProjectsPage() {
                                                                 }}
                                                             >
                                                                 <Link
-                                                                    href={
-                                                                        project.githubUrl
-                                                                    }
+                                                                    href={project.demoUrl}
+                                                                    target="_blank"
+                                                                    className="inline-flex items-center text-sm px-3 py-1.5 font-medium bg-green-600/30 text-green-300 rounded-md hover:bg-green-600/50 transition-colors"
+                                                                >
+                                                                    Live Demo{" "}
+                                                                    <FiExternalLink className="ml-1 w-3 h-3" />
+                                                                </Link>
+                                                            </motion.div>
+                                                        )}
+
+                                                        {hasGithub(project) && (
+                                                            <motion.div
+                                                                whileHover={{
+                                                                    scale: 1.05,
+                                                                }}
+                                                                whileTap={{
+                                                                    scale: 0.95,
+                                                                }}
+                                                            >
+                                                                <Link
+                                                                    href={project.githubUrl}
                                                                     target="_blank"
                                                                     className="inline-flex items-center text-sm px-3 py-1.5 font-medium bg-gray-800 text-gray-300 rounded-md hover:bg-gray-700 transition-colors"
                                                                 >

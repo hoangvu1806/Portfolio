@@ -13,6 +13,7 @@ import {
     FiFileText,
 } from "react-icons/fi";
 import { profile } from "@/data/profile";
+import { ImagePaths } from "@/utils/image-paths";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
@@ -32,7 +33,7 @@ export function Footer() {
                         <div className="flex items-center mb-6 gap-2">
                             <div className="w-10 h-10 rounded-lg overflow-hidden">
                                 <Image
-                                    src="/logo.png"
+                                    src={ImagePaths.ui.logo}
                                     alt="Logo"
                                     width={40}
                                     height={40}
@@ -47,9 +48,9 @@ export function Footer() {
                             </div>
                         </div>
                         <p className="text-gray-400 mb-6 max-w-md">
-                            AI Engineer specializing in Generative AI, NLP, and
-                            Computer Vision. Always looking to create innovative
-                            and effective technology solutions.
+                            Researching and engineering intelligent systems with
+                            Generative AI, AI Agents, and Computer Vision to
+                            drive innovation and real-world impact
                         </p>
                         <div className="flex items-center gap-4">
                             <Link

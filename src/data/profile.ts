@@ -1,3 +1,29 @@
+import { ImagePaths } from "@/utils/image-paths";
+
+// Project slug mapping for consistent paths
+const projectSlugs = {
+    "ENTERPRISE AI CHATBOT PLATFORM": "enterprise-ai-chatbot-platform",
+    "INTERNAL DOCUMENT INTELLIGENCE SYSTEM":
+        "internal-document-intelligence-system",
+    "Deeplearning-Practice": "deeplearning-practice",
+    EzClip: "ezclip",
+    "Decision Tree Visualization": "decision-tree-visualization",
+    "SciHorizone": "scihorizone",
+};
+
+// Helper function to get project image path (handles both jpg and svg)
+const getProjectImage = (slug: string, type: "hero" | "thumbnail" = "hero") => {
+    // For placeholder projects, use SVG
+    if (
+        slug === "enterprise-ai-chatbot-platform" ||
+        slug === "internal-document-intelligence-system"
+    ) {
+        return `/images/projects/${slug}/${type}.svg`;
+    }
+    // For real projects, use JPG
+    return `/images/projects/${slug}/${type}.jpg`;
+};
+
 export const profile = {
     name: "Do Hoang Vu",
     title: "AI Engineer",
@@ -45,7 +71,14 @@ export const profile = {
                 "Built custom vector databases for efficient storage and retrieval of domain-specific knowledge",
             ],
             featured: true,
-            image: null,
+            image: getProjectImage(
+                projectSlugs["ENTERPRISE AI CHATBOT PLATFORM"],
+                "hero"
+            ),
+            thumbnail: getProjectImage(
+                projectSlugs["ENTERPRISE AI CHATBOT PLATFORM"],
+                "thumbnail"
+            ),
             demoUrl: null,
             githubUrl: null,
         },
@@ -60,7 +93,15 @@ export const profile = {
                 "Created an intuitive dashboard for monitoring system performance and document processing metrics",
                 "Integrated with existing enterprise systems through secure APIs",
             ],
-            status: "In Development",
+            status: "In Development" as const,
+            image: getProjectImage(
+                projectSlugs["INTERNAL DOCUMENT INTELLIGENCE SYSTEM"],
+                "hero"
+            ),
+            thumbnail: getProjectImage(
+                projectSlugs["INTERNAL DOCUMENT INTELLIGENCE SYSTEM"],
+                "thumbnail"
+            ),
         },
         {
             title: "PREDICTIVE CUSTOMER ANALYTICS PLATFORM",
@@ -73,7 +114,7 @@ export const profile = {
                 "Implemented real-time data processing pipelines for continuous model updating",
                 "Created recommendation engines for personalized customer experiences",
             ],
-            status: "In Development",
+            status: "In Development" as const,
         },
         {
             title: "MULTIMODAL SENTIMENT ANALYSIS TOOL",
@@ -86,7 +127,7 @@ export const profile = {
                 "Creating visualization tools for sentiment analysis results",
                 "Building an API for easy integration with content management systems",
             ],
-            status: "In Development",
+            status: "In Development" as const,
         },
         {
             title: "PERSONAL FINANCE AI ASSISTANT",
@@ -99,7 +140,7 @@ export const profile = {
                 "Creating visualization and reporting tools for financial insights",
                 "Building integration with financial data providers while maintaining user privacy",
             ],
-            status: "In Development",
+            status: "In Development" as const,
         },
         {
             title: "COLLABORATIVE RESEARCH PLATFORM FOR STUDENTS",
@@ -112,30 +153,67 @@ export const profile = {
                 "Implementing citation management and literature organization features",
                 "Building communication channels for research teams",
             ],
-            status: "In Planning",
+            status: "In Planning" as const,
             demoUrl: null,
         },
         {
             title: "ZALO AI CHALLENGE 2023",
+            type: "Competition",
             description:
                 "Built deep generative models for symbolic and audio-based music generation using Transformer-based architectures. Fine-tuned temporal coherence and structural consistency to align with evaluation metrics in generative audio tasks.",
+            status: "Completed" as const,
         },
         {
             title: "AIC24 COMPETITION",
+            type: "Competition",
             description:
                 "Developed scalable video understanding pipelines for event retrieval, leveraging contrastive learning and multimodal embeddings to enhance temporal-semantic alignment in untrimmed video datasets.",
             details: [
                 "Integrated multi-head self-attention, temporal convolutional networks, and cross-modal fusion to improve mAP and retrieval latency in benchmark datasets.",
             ],
+            status: "Completed" as const,
         },
         {
             title: "VIZQUEST: ENHANCED VIDEO EVENT RETRIEVAL USING FUSION AND TEMPORAL MODELING",
             type: "Research Paper",
             description:
                 "Co-authored a research paper accepted at SOICT24, introducing a novel framework combining spatio-temporal attention with hierarchical feature fusion to optimize long-range video event detection.",
+            status: "Completed" as const,
         },
     ],
     personalProjects: [
+        {
+            title: "SciHorizone - IELTS Exam Generator",
+            type: "AI & ML",
+            description:
+                "AI-powered application that converts scientific papers (PDF) into IELTS/TOEIC reading comprehension exams using Google Gemini AI. Features intelligent PDF processing, automated question generation, and interactive exam interface.",
+            details: [
+                "Google Gemini AI integration for intelligent question generation",
+                "Advanced PDF processing with docling-serve and fallback methods",
+                "Support for IELTS (band 4.0-9.0) and TOEIC (400-900 points) formats",
+                "Interactive exam interface with timer and navigation system",
+                "Automated grading with detailed explanations and analysis",
+                "Multiple question types: Multiple choice, True/False/Not Given, Matching, Fill in blanks",
+                "Professional exam simulation with responsive design",
+                "Real-time PDF extraction from uploads or URLs",
+                "Comprehensive result analysis with improvement recommendations",
+                "Production deployment with Docker containerization"
+            ],
+            image: ImagePaths.project.hero(projectSlugs["SciHorizone"]),
+            thumbnail: ImagePaths.project.thumbnail(projectSlugs["SciHorizone"]),
+            githubUrl: "https://github.com/hoangvu1806/SciHorizone",
+            demoUrl: "https://scihorizone.hoangvu.id.vn",
+            featured: true,
+            status: "Completed" as const,
+            techStack: ["Next.js", "FastAPI", "Google Gemini AI", "Python", "TypeScript", "Tailwind CSS", "Docker"],
+            highlights: [
+                "🤖 AI-powered exam generation using Google Gemini",
+                "📄 Intelligent PDF processing with multiple extraction methods",
+                "🎯 Professional exam simulation interface",
+                "📊 Automated grading with detailed analysis",
+                "🌐 Full-stack application with modern tech stack"
+            ]
+        },
         {
             title: "Deeplearning-Practice",
             type: "AI & ML",
@@ -149,7 +227,12 @@ export const profile = {
                 "Classification models for Vietnamese news articles",
                 "All implementations feature clean, well-documented code with detailed explanations",
             ],
-            image: "/deeplearning.jpg",
+            image: ImagePaths.project.hero(
+                projectSlugs["Deeplearning-Practice"]
+            ),
+            thumbnail: ImagePaths.project.thumbnail(
+                projectSlugs["Deeplearning-Practice"]
+            ),
             githubUrl: "https://github.com/hoangvu1806/Deeplearning-Practice",
             featured: true,
         },
@@ -162,10 +245,11 @@ export const profile = {
                 "Support for multiple platforms including YouTube, Facebook, TikTok",
                 "Download videos in various formats and resolutions",
                 "Simple and intuitive user interface with modern design",
-                "Offline functionality – no server required",
+                "Offline functionality - no server required",
                 "Built with Electron.js for cross-platform compatibility",
             ],
-            image: "/ezclip.jpg",
+            image: ImagePaths.project.hero(projectSlugs["EzClip"]),
+            thumbnail: ImagePaths.project.thumbnail(projectSlugs["EzClip"]),
             githubUrl: "https://github.com/hoangvu1806/EzClip",
             featured: true,
         },
@@ -181,44 +265,60 @@ export const profile = {
                 "Visualizes decision trees as hierarchical structures",
                 "Calculates and displays model evaluation metrics",
             ],
-            image: "/visualization_decision_tree.jpg",
+            image: ImagePaths.project.hero(
+                projectSlugs["Decision Tree Visualization"]
+            ),
+            thumbnail: ImagePaths.project.thumbnail(
+                projectSlugs["Decision Tree Visualization"]
+            ),
             githubUrl:
                 "https://github.com/hoangvu1806/Decision-Tree-Visualization",
             featured: true,
         },
         {
             title: "Generative AI and Retrieval-Augmented Generation (RAG) Research",
+            type: "Research",
             description:
                 "Explored advanced implementations of LLMs integrated with RAG pipelines using vector databases (FAISS, ChromaDB) and embeddings from OpenAI/BGE models for enterprise-grade question-answering systems.",
+            status: "Completed" as const,
         },
         {
             title: "Speech-to-Speech Conversion Models",
+            type: "Research",
             description:
                 "Built prototypes using voice conversion models (e.g., VITS, YourTTS) to enable real-time speaker-adaptive transformations, focusing on phoneme alignment, prosody control, and zero-shot voice cloning.",
+            status: "Completed" as const,
         },
     ],
     skills: {
         technical: [
             {
                 category: "Programming",
-                items: ["Python", "JavaScript", "SQL", "C/C++", "Bash"],
+                items: ["Python", "JavaScript", "SQL", "Bash"],
             },
             {
                 category: "Libraries/Frameworks",
-                items: ["PyTorch", "FastAPI", "LangChain", "Opencv"],
+                items: [
+                    "PyTorch",
+                    "LangChain",
+                    "FastAPI",
+                    "Hugging Face Transformers",
+                    "Opencv",
+                ],
             },
             {
                 category: "AI Expertise",
                 items: [
                     "LLMs",
-                    "Generative AI",
-                    "Enterprise Chatbot Systems",
+                    // "Generative AI",
+                    "Multi-Agent Systems",
+                    "Graph-RAG",
                     "Computer Vision",
                 ],
             },
             {
                 category: "Tools",
-                items: ["Conda", "Git", "GitHub", "Docker", "n8n"],
+                items: ["Git", "Docker", "Cloudflared", "n8n"],
             },
         ],
         soft: [
@@ -235,7 +335,7 @@ export const profile = {
     interests: [
         "Generative AI",
         "LLMs",
-        "Enterprise Chatbot Systems",
+        "Multi-Agent Systems",
         "Voice Transformation",
     ],
 };

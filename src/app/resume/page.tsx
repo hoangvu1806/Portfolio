@@ -23,21 +23,21 @@ export default function ResumePage() {
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        offset: ["start start", "end end"],
+        offset: ["start start", "end start"],
     });
 
     const opacity = useTransform(
         scrollYProgress,
         [0, 0.2, 0.8, 1],
-        [0.3, 1, 1, 0.3]
+        [0.3, 1, 1, 0.7]
     );
     const scale = useTransform(
         scrollYProgress,
         [0, 0.2, 0.8, 1],
-        [0.95, 1, 1, 0.95]
+        [0.95, 1, 1, 0.98]
     );
 
-    const SkillBar = ({ title, level }) => (
+    const SkillBar = ({ title, level }: { title: string; level: number }) => (
         <div className="mb-3">
             <div className="flex justify-between mb-2">
                 <span className="text-sm font-medium text-gray-300">
@@ -286,18 +286,18 @@ export default function ResumePage() {
                                                             whileInView={{
                                                                 width:
                                                                     lang.level ===
-                                                                    "Native"
+                                                                        "Native"
                                                                         ? "100%"
                                                                         : lang.level ===
-                                                                          "Fluent"
-                                                                        ? "90%"
-                                                                        : lang.level ===
-                                                                          "Advanced"
-                                                                        ? "80%"
-                                                                        : lang.level ===
-                                                                          "Intermediate"
-                                                                        ? "60%"
-                                                                        : "40%",
+                                                                            "Fluent"
+                                                                            ? "90%"
+                                                                            : lang.level ===
+                                                                                "Advanced"
+                                                                                ? "80%"
+                                                                                : lang.level ===
+                                                                                    "Intermediate"
+                                                                                    ? "60%"
+                                                                                    : "40%",
                                                             }}
                                                             viewport={{
                                                                 once: true,

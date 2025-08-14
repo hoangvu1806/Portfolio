@@ -6,9 +6,12 @@
         "dev": "next dev --turbopack -p 8001",
         "build": "next build",
         "start": "next start -p 8000",
-        "lint": "next lint"
+        "lint": "next lint",
+        "add-project": "node scripts/add-project.js"
     },
     "dependencies": {
+        "@emailjs/browser": "^4.4.1",
+        "@tailwindcss/line-clamp": "^0.4.4",
         "framer-motion": "^12.11.0",
         "gsap": "^3.13.0",
         "next": "15.3.2",
